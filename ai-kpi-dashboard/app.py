@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-from kpi_analyzer import analyze_kpis, ask_ai_about_data
+from ai_kpi_dashboard.kpi_analyzer import analyze_kpis, ask_ai_about_data
 from utils import load_data
 import openai
 
