@@ -3,6 +3,9 @@ import pandas as pd
 import plotly.express as px
 from kpi_analyzer import analyze_kpis, ask_ai_about_data
 from utils import load_data
+import openai
+
+openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 st.set_page_config(page_title="AI-Powered KPI Dashboard", layout="wide")
 st.title("📊 AI-Powered Business KPI Dashboard")
