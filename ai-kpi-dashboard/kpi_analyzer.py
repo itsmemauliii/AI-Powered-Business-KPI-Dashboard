@@ -1,27 +1,28 @@
 import openai
+from openai import OpenAI
 import os
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+api_key = os.getenv("OPENAI_API_KEY", None)
 
-def analyze_kpis(df):
-    # Placeholder logic for KPIs
-    return {
-        "Total Sales": round(df.iloc[:, 1].sum(), 2),
-        "Average Monthly Sales": round(df.iloc[:, 1].mean(), 2),
-        "Unique Regions": df.iloc[:, 2].nunique(),
-    }
+if api_key is None:
+    import streamlit as st
+    api_key = st.secrets["OPENAI_API_KEY"]
 
-def ask_ai_about_data(df, question):
+client = OpenAI(api_key=api_key)
+
+def ask_ai_about_data(df, user_question):
     prompt = f"""
-You are a business analyst. Here is a preview of the dataset:
-{df.head(20).to_string(index=False)}
+    You are a data analyst assistant. Given this dataset:\n\n
+    {df.head(10).to_string(index=False)}\n\n
+    Question: {user_question}\n
+    Provide a helpful and concise business insight.
+    """
 
-Now answer this user question based on the data:
-Q: {question}
-A:
-"""
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": prompt}]
+        messages=[
+            {"role": "user", "content": prompt}
+        ]
     )
-    return response['choices'][0]['message']['content'].strip()
+
+    return response.choices[0].message.content.strip()
